@@ -1,0 +1,456 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Shop Cart API",
+        "description": "API for shop cart, with products, users and orders, where you can add, edit, delete and list.",
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://localhost:8000",
+            "description": "Local server"
+        }
+    ],
+    "paths":{
+        "/signup":{
+            "post":{
+                "tags":["Signup"],
+                "summary":"Create a new user",
+                "requestBody":{
+                    "content":{
+                        "application/json":{
+                            "schema":{
+                                "$ref":"#/components/schemas/signup"
+                            }
+                        }
+                    }
+                },
+                "responses":{
+                    "200":{
+                        "description":"User created successfully"
+                    },
+                    "400": {
+                        "description": "Validation error",
+                        "content": {
+                        "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                            "errorName": {
+                                "type": "string",
+                                "example": "Validation error"
+                            },
+                            "message": {
+                                "type": "array",
+                                "items": {
+                                "type": "string"
+                                }
+                            }
+                            }
+                        }
+                        }
+                        }
+                    }
+                }
+            }
+        },
+        "/login":{
+            "post":{
+                "tags":["Login"],
+                "summary":"Login user",
+                "requestBody":{
+                    "content":{
+                        "application/json":{
+                            "schema":{
+                                "$ref":"#/components/schemas/login"
+                            }
+                        }
+                    }
+                },
+                "responses":{
+                    "200":{
+                        "description":"User logged in successfully"
+                    },
+                    "400": {
+                        "description": "Login Error",
+                        "content": {
+                        "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                            "errorName": {
+                                "type": "string",
+                                "example": "Validation error"
+                            },
+                            "message": {
+                                "type": "array",
+                                "items": {
+                                "type": "string"
+                                }
+                            }
+                            }
+                        }
+                        }
+                        }
+                    }
+                }
+            }
+        },
+        "/users":{
+            "get":{
+                "tags":["Users"],
+                "summary":"List all users",
+                "responses":{
+                    "200":{
+                        "description":"Users listed successfully"
+                    },
+                    "400": {
+                        "description": "Listing error",
+                        "content": {
+                        "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                            "errorName": {
+                                "type": "string",
+                                "example": "Validation error"
+                            },
+                            "message": {
+                                "type": "array",
+                                "items": {
+                                "type": "string"
+                                }
+                            }
+                            }
+                        }
+                        }
+                        }
+                    }
+                }
+            }
+        },
+        "/user/:id":{
+            "put":{
+                "tags":["Update Users"],
+                "summary":"Update the avatar and username of a user",
+                "parameters":[
+                    {
+                        "in":"path",
+                        "name":"id",
+                        "required":true,
+                        "description":"User id",
+                        "schema":{
+                            "type":"string"
+                        }
+                    }
+                ],
+                "requestBody":{
+                    "content":{
+                        "application/json":{
+                            "schema":{
+                                "$ref":"#/components/schemas/updateUser"
+                            }
+                        }
+                    }
+                },
+                "responses":{
+                    "200":{
+                        "description":"User updated successfully"
+                    },
+                    "400": {
+                        "description": "Update error",
+                        "content": {
+                        "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                            "errorName": {
+                                "type": "string",
+                                "example": "Validation error"
+                            },
+                            "message": {
+                                "type": "array",
+                                "items": {
+                                "type": "string"
+                                }
+                            }
+                            }
+                        }
+                        }
+                        }
+                    }
+                }
+            }
+        },
+        "/users/:id":{
+            "delete":{
+                "tags":["Delete Users"],
+                "summary":"Delete a user",
+                "parameters":[
+                    {
+                        "in":"path",
+                        "name":"id",
+                        "required":true,
+                        "description":"User id",
+                        "schema":{
+                            "type":"string"
+                        }
+                    }
+                ],
+                "responses":{
+                    "204":{
+                        "description":"User deleted successfully"
+                    },
+                    "400": {
+                        "description": "Deleting User error",
+                        "content": {
+                        "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                            "errorName": {
+                                "type": "string",
+                                "example": "Validation error"
+                            },
+                            "message": {
+                                "type": "array",
+                                "items": {
+                                "type": "string"
+                                }
+                            }
+                            }
+                        }
+                        }
+                        }
+                    }
+                }
+            }
+        },
+        "/products":{
+            "get":{
+                "tags":["Products"],
+                "summary":"List all products",
+                "responses":{
+                    "200":{
+                        "description":"Products listed successfully"
+                    },
+                    "400": {
+                        "description": "Listing error",
+                        "content": {
+                        "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                            "errorName": {
+                                "type": "string",
+                                "example": "Validation error"
+                            },
+                            "message": {
+                                "type": "array",
+                                "items": {
+                                "type": "string"
+                                }
+                            }
+                            }
+                        }
+                        }
+                        }
+                    }
+                }
+            }
+        },
+        "/products/:id":{
+            "get":{
+                "tags":["Product"],
+                "summary":"List a product",
+                "parameters":[
+                    {
+                        "in":"path",
+                        "name":"id",
+                        "required":true,
+                        "description":"Product id",
+                        "schema":{
+                            "type":"string"
+                        }
+                    }
+                ],
+                "responses":{
+                    "200":{
+                        "description":"Product listed successfully"
+                    },
+                    "400": {
+                        "description": "Listing error",
+                        "content": {
+                        "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                            "errorName": {
+                                "type": "string",
+                                "example": "Validation error"
+                            },
+                            "message": {
+                                "type": "array",
+                                "items": {
+                                "type": "string"
+                                }
+                            }
+                            }
+                        }
+                        }
+                        }
+                    }
+                }
+            }
+        },
+        "/product":{
+            "post":{
+                "tags":["Create Product"],
+                "summary":"Create a product",
+                "requestBody":{
+                    "content":{
+                        "application/json":{
+                            "schema":{
+                                "$ref":"#/components/schemas/createProduct"
+                            }
+                        }
+                    }
+                },
+                "responses":{
+                    "201":{
+                        "description":"Product created successfully"
+                    },
+                    "400": {
+                        "description": "Creating error",
+                        "content": {
+                        "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                            "errorName": {
+                                "type": "string",
+                                "example": "Validation error"
+                            },
+                            "message": {
+                                "type": "array",
+                                "items": {
+                                "type": "string"
+                                }
+                            }
+                            }
+                        }
+                        }
+                        }
+                    }
+                }
+            }
+        
+        },
+        "/product/:id":{
+            "put":{
+                "tags":["Update Product"],
+                "summary":"Update a product",
+                "parameters":[
+                    {
+                        "in":"path",
+                        "name":"id",
+                        "required":true,
+                        "description":"Product id",
+                        "schema":{
+                            "type":"string"
+                        }
+                    }
+                ],
+                "requestBody":{
+                    "content":{
+                        "application/json":{
+                            "schema":{
+                                "$ref":"#/components/schemas/updateProduct"
+                            }
+                        }
+                    }
+                },
+                "responses":{
+                    "200":{
+                        "description":"Product updated successfully"
+                    },
+                    "400": {
+                        "description": "Updating error",
+                        "content": {
+                        "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                            "errorName": {
+                                "type": "string",
+                                "example": "Validation error"
+                            },
+                            "message": {
+                                "type": "array",
+                                "items": {
+                                "type": "string"
+                                }
+                            }
+                            }
+                        }
+                        }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components":{
+        "schemas":{
+            "signup":{
+                "type":"object",
+                "properties":{
+                    "avatar":{
+                        "type":"string"
+                    },
+                    "username":{
+                        "type":"string"
+                    },
+                    "email":{
+                        "type":"string"
+                    },
+                    "password":{
+                        "type":"string"
+                    },
+                    "validated":{
+                        "type":"boolean"
+                    }
+                }
+            },
+            "login":{
+                "type":"object",
+                "properties":{
+                    "email":{
+                        "type":"string"
+                    },
+                    "password":{
+                        "type":"string"
+                    }
+                }
+            },
+            "updateUser":{
+                "type":"object",
+                "properties":{
+                    "avatar":{
+                        "type":"string"
+                    },
+                    "username":{
+                        "type":"string"
+                    }
+                }
+            }
+        }
+    },
+    "securitySchemes": {
+        "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+        }
+    }
+}
