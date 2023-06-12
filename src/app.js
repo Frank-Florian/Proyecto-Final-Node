@@ -1,19 +1,32 @@
-const express = require('express');
-const apiRoutes = require('./routes/index');
-const errorRoutes = require('./middlewares/index');
-require('dotenv').config();
+const express = require("express");
+const cors = require("cors");
+require("dotenv").config();
+const apiRoutes = require("./routes");
+const errorRoutes = require("./routes/errors.routes");
+const initModels = require("./models/initModels");
+const db = require("./utils/database");
 
-const cors = require('cors');
+initModels();
+
 const app = express();
-const PORT = process.env.PORT || 8000;
 
 app.use(cors());
 app.use(express.json());
+
+db.sync()
+  .then(() => console.log("Sincronizado"))
+  .catch(e => console.error(e))
+
+const PORT = process.env.PORT || 8000;
+
+app.get("/", (req, res) => {
+  res.send("Servidor trabajando OK");
+});
+
+// agrupar todas las rutas en un archivo
 apiRoutes(app);
 errorRoutes(app);
 
-app.get('/', (req, res) => {
-    res.send('Testing');
+app.listen(PORT, () => {
+  console.log(`Servidor escuchando en el puerto ${PORT}`);
 });
-
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

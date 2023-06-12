@@ -1,69 +1,73 @@
-const { users, carts } = require('../models');
+const Users = require("../models/users.model");
+const Cars = require("../models/cars.model");
+const ProductsInCar = require("../models/productInCar.model")
+const Products = require("../models/products.model")
+const Orders = require("../models/orders.model")
 
 const createUser = async (newUser) => {
-    try {
-        const user = await users.create(newUser);
-        return user;
-    } catch (error) {
-        throw error;
-    }
-    }
+    const user = await Users.create(newUser);
+    return user;
+}
 
-const login = async (email) => {
-    try {
-        const user = await users.findOne({ where: { email } });
-        return user;
-    } catch (error) {
-        throw error;
-    }
-    }
-
-const updateUser = async (id, userData) => {
-    const user = await users.update(userData, {
-        where: { id }
+const loginUser = async (email) => {
+    const user = await Users.findOne({
+        where: {email}
     });
     return user;
-    }
+}
 
+const updateUser = async (filename, username, id) =>{
+    const user = await Users.update({
+        username:username,
+        avatar: filename
+     },{
+       where: {id}
+     })
+    return user;
+}
 
-const deleteUser = async (id) => {
-    const user = await users.destroy({
-        where: { id },
+const getUserbyIdAndProductsInCar = async (id) => {
+    const user = await Users.findByPk(id,{
+        attributes: {exclude: ["password", "validUser","avatar","firstname","lastname"]},
+        include: [
+            {
+                model: Cars,
+                attributes: ["id", "totalPrice"],
+                include: [
+                    {
+                        model: ProductsInCar,
+                        where: {status: false},
+                        attributes: ["quantity","price","status"],
+                        include: [
+                            {
+                                model: Products,
+                                attributes: {exclude:["available","userId"]}
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
     });
     return user;
-    }
+}
 
-// const getUserById = async (id) => {
-//     const user = await users.findByPk(id);
-//     delete user.dataValues.password;
-//     return user;
-//     }
-
-//obtener un usuario por ir exluyendo el password de la respuesta e incluyendo el cart
-const getUserById = async (id) => {
-    const user = await users.findByPk(id
-    //     , {
-    //     attributes: {
-    //         exclude: ['password']
-    //     },
-    //     include: ['carts']
-    // }
-    );
+const getOrdersByUserId = async (id) => {
+    const user = await Users.findByPk(id,{
+        attributes: {exclude: ["password", "validUser", "firstname", "lastname", "id","avatar"]},
+        include: [
+            {
+                model: Orders
+            }
+        ]
+    })
     return user;
-    }
+}
 
-const getAllUsers = async () => {
-    const usersList = await users.findAll();
-    return usersList;
-    }
-
-
-
-    module.exports = {
-        createUser,
-        updateUser,
-        deleteUser,
-        getUserById,
-        login,
-        getAllUsers
-    };
+module.exports = {
+    createUser,
+    loginUser,
+    updateUser,
+    getUserbyIdAndProductsInCar,
+    getOrdersByUserId
+}

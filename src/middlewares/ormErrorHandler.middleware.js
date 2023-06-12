@@ -1,42 +1,43 @@
 const {
-    ValidationError,
-    DatabaseError,
-    ConnectionError,
-    ConnectionRefusedError,
-    ConnectionTimedOutError,
-    InvalidConnectionError,
-    ConnectionAcquireTimeoutError,
-} = require('sequelize');
+  ValidationError,
+  DatabaseError,
+  ConnectionAcquireTimeoutError,
+  ConnectionError,
+  ConnectionRefusedError,
+  ConnectionTimedOutError,
+  InvalidConnectionError,
+} = require("sequelize");
 
-const ormErrorHandler = (err, req, res, next) => {
-    if(
-        err instanceof ConnectionError ||
-        err instanceof ConnectionRefusedError ||
-        err instanceof ConnectionTimedOutError ||
-        err instanceof InvalidConnectionError ||
-        err instanceof ConnectionAcquireTimeoutError
-    )
-    {
-        return res.status(409).json({
-            name: err.name,
-            message: 'Database connection error'
-        })
-    }
-    if(err instanceof DatabaseError){
-        return res.status(409).json({
-            name: err.name,
-            message: err.message,
-            errors: err.errors
-        })
-    }
-    if(err instanceof ValidationError){
-        return res.status(400).json({
-            name: err.name,
-            message: err.message,
-            errors: err.errors.map(error => error.message)
-        })
-    }
-    next(err);
-}
+const ormErroHandler = (err, req, res, next) => {
+  if (
+    err instanceof ConnectionError ||
+    err instanceof ConnectionAcquireTimeoutError ||
+    err instanceof ConnectionRefusedError ||
+    err instanceof ConnectionTimedOutError ||
+    err instanceof InvalidConnectionError
+  ) {
+    return res.status(409).json({
+      name: err.name,
+      message: "Database conecction error",
+    });
+  }
 
-module.exports = ormErrorHandler;
+  if (err instanceof ValidationError) {
+    return res.status(400).json({
+      name: err.name,
+      message: err.message,
+      errors: err.errors,
+    });
+  }
+
+  if (err instanceof DatabaseError) {
+    return res.status(409).json({
+      name: err.name,
+      message: err.message,
+      errors: err.errors,
+    });
+  }
+  next(err);
+};
+
+module.exports = ormErroHandler;
